@@ -14,33 +14,35 @@ struct book{
 	string edition;
 	string b_Person = "None";
 	int l_Day = 0; 
+	int index = 0;
 
 };
 
 void printMenu();
+string * p_Arg(string line);
+book *load_m(string FileName);
+void save_m(string fileName, book * bookList);
+void print_m(book * bookList);
+book insert_m(string * arg);
+book *lend_m(book * bookList, string * arg);
+book *passDay_m(book * bookList);
+book * returned_m(book * bookList, string * arg);
 
-book *load();
-void save(string fileName);
-void print(book[] bookList);
-book insert(string[] arr);
-book *lend(book[] bookList);
-book *passDay(book[] bookList);
-book returned(book r_book);
 int getExit();
 
 int main(){
 
 	int setExit = 1;
 
-	book b_List[50];
+	book * b_List;
 
 	string openFile = "first.txt";
 
 	while(setExit){
 
-		b_List = load(openFile);
+		b_List = load_m(openFile);
 
-		string argLine, arg[4];
+		string argLine, *arg;
 
 		enum menu {INSERT, Insert, insert, LEND, Lend, lend, SAVE, Save, save, RETURNED, Returned, returned, PASSDAY, Passday, passday, PRINT, Print, print, EXIT, Exit, exit};
 
@@ -48,38 +50,48 @@ int main(){
 
 		getline(cin, argLine);
 
-		switch(arg[0]){
+		arg = p_Arg(argLine);
+
+		menu num;
+
+		switch(num){
 
 		case INSERT:
 		case Insert:
-		case insert:	insert(b_List);
-				break;
+		case insert:	
+						insert_m(arg);
+						break;
 		case LEND:
 		case Lend:
-		case lend:	lend(b_List);
-				break;
+		case lend:	
+						lend_m(b_List, arg);
+						break;
 		case SAVE:
 		case Save:
-		case save:	save(arg[1]);
-				break;
+		case save:		
+						save_m(arg[1], b_List);
+						break;
 		case RETURNED:
 		case Returned:
-		case returned:	returned(b_List);
-				break;
+		case returned:	
+						returned_m(b_List, arg);
+						break;
 		case PASSDAY:
 		case Passday:
-		case passday:	passDay(b_List);
-				break;
+		case passday:	
+						passDay_m(b_List);
+						break;
 		case PRINT:
 		case Print:
-		case print:	print(b_List);
-				break;
+		case print:	
+						print_m(b_List);
+						break;
 		case EXIT:
 		case Exit:
-		case exit:	setExit = getExit();
-				break;
+		case exit:	
+						setExit = getExit();
+						break;
 		}
-		
 	}
 
 	return 0;
@@ -99,16 +111,44 @@ void printMenu(){
 	cout << "  >>";
 }
 
-//TODO: THREE - function Load
+string * p_Arg(string line){
+	
+	int f_col, i = 0;
+	
+	string arg[4];
+	
+	while(i < 4){
 
-book *load(string FileName){
+		if(line.length() > 2){
+			f_col = line.find(";");
+				if(f_col == -1){
+					arg[i] = line;
+					break;
+				}
+			arg[i] = line.substr(0, f_col);
+			line.erase(0, f_col);
+			i++;
+		}
+		else
+			break;
+	
+	}
+
+	return arg;
+
+}
+
+
+//DONE: THREE - function Load
+
+book *load_m(string FileName){
 	//open file and store list
-	book[50] bookList;
+	book * bookList;
 
 	int i = 0;
 
 	ifstream inData;
-	inData.open(FileName.c_str())
+	inData.open(FileName.c_str());
 
 	if(!inData){
 		
@@ -125,10 +165,12 @@ book *load(string FileName){
 
 		}
 
-		print(bookList);
+		bookList[0].index = i;
+		print_m(bookList);
 	}
 
-	inData.cloase();
+	inData.close();
+
 
 	return bookList;
 
@@ -136,18 +178,34 @@ book *load(string FileName){
 
 //TODO: THREE - function Save
 
-void save(string fileName){
+void save_m(string fileName, book * bookList){
 	// use ofstream and save text file
+	ofstream outData;
 
+	int i = 0;
+
+	outData.open(fileName.c_str());
+
+	while (i < bookList[0].index - 1) {
+
+		outData << bookList[i].title << bookList[i].p_Year << bookList[i].author << bookList[i].edition << bookList[i].b_Person << bookList[i].l_Day << endl;
+		
+		i++;
+
+	}
+
+	outData << bookList[i].title << bookList[i].p_Year << bookList[i].author << bookList[i].edition << bookList[i].b_Person << bookList[i].l_Day;
+
+	outData.close();
 }
 
-//TODO: THREE - function Print
-void print(book[] bookList){
+//DONE: THREE - function Print
+void print_m(book * bookList){
 
 	cout << "  ======================================== Book Catalog ========================================" << endl;
 	cout << setw(8) << "Title" << setw(24) << "Author" << setw(28) << "Publised Year" << setw(10) << "Edition" << setw(10) << "Borrower" << setw(16) << "Days Borrowed" << endl;
 
-	for(int i = 0; i < bookList.size() ; i++ ){
+	for(int i = 0; i < bookList[0].index ; i++ ){
 
 		cout << "   " << bookList[i].title << setw(24 - bookList[i].title.length()) << bookList[i].author << setw(28 - bookList[i].author.length()) << bookList[i].p_Year << setw(10 - bookList[i].p_Year.length()) << bookList[i].edition << setw(10 - bookList[i].edition.length()) << bookList[i].b_Person << setw(16 - bookList[i].b_Person.length()) << bookList[i].l_Day << endl;
 	}
@@ -157,7 +215,7 @@ void print(book[] bookList){
 }
 
 //TODO: THREE - function Insert
-book insert(string[] arr){
+book insert_m(string * arg){
 
 	book newBook;
 	
@@ -166,21 +224,21 @@ book insert(string[] arr){
 }
 
 //TODO: THREE - function Lend
-book *lend(book[] bookList){
+book *lend_m(book * bookList, string * arg){
 
 	return bookList;
 }
 
 //TODO: THREE - function Passday
-book *passDay(book[] bookList){
+book *passDay_m(book * bookList){
 	
 	return bookList;
 }
 
 //TODO: THREE - function Returned
-book returned(book r_book){
+book * returned_m(book * bookList, string * arg){
 
-	return r_book;
+	return bookList;
 }
 
 //TODO: THREE - fundtion Exit
