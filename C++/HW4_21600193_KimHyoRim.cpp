@@ -13,8 +13,8 @@ struct book{
 	string author;
 	string edition;
 	string b_Person = "None";
-	int l_Day = 0; 
-	int index = 0;
+	int l_Day; 
+	int index;
 
 };
 
@@ -23,7 +23,7 @@ string * p_Arg(string line);
 book *load_m(string FileName);
 void save_m(string fileName, book * bookList);
 void print_m(book * bookList);
-book insert_m(string * arg);
+book * insert_m(book * bookList, string * arg);
 book *lend_m(book * bookList, string * arg);
 book *passDay_m(book * bookList);
 book * returned_m(book * bookList, string * arg);
@@ -56,30 +56,32 @@ int main(){
 		switch(toupper(n1)){
 
 		case 'I':	
-						insert_m(arg);
-						break;
-		case 'L' :
-						lend_m(b_List, arg);
-						break;
-		case 'S':
-						save_m(arg[1], b_List);
-						break;
-		case 'R':
-						returned_m(b_List, arg);
-						break;
-		case 'P':	
-					switch (toupper(n2)) {
-			
-						case 'A':	passDay_m(b_List);
-									break;
-
-						case 'R':	print_m(b_List);
-									break;
-					}
+					b_List = insert_m(b_List, arg);
 					break;
+		case 'L' :
+					b_List = lend_m(b_List, arg);
+					break;
+		case 'S':
+					save_m(arg[1], b_List);
+					break;
+		case 'R':
+					b_List = returned_m(b_List, arg);
+					break;
+		case 'P':	
+				switch (toupper(n2)) {
+		
+					case 'A':	
+							b_List = passDay_m(b_List);
+							break;
+
+					case 'R':	
+							print_m(b_List);
+							break;
+				}
+				break;
 		case 'E':	
-						setExit = getExit();
-						break;
+					setExit = getExit();
+					break;
 		}
 	}
 
@@ -135,7 +137,7 @@ string * p_Arg(string line){
 }
 
 
-//TODO: THREE - function Load
+//DONE: THREE - function Load
 
 book *load_m(string FileName){
 	//open file and store list
@@ -181,8 +183,8 @@ book *load_m(string FileName){
 			}	
 
 			bookList[i].title = arr[0];
-			bookList[i].author = arr[1];
-			bookList[i].p_Year = arr[2];
+			bookList[i].p_Year = arr[1];
+			bookList[i].author = arr[2];
 			bookList[i].edition = arr[3];
 			bookList[i].b_Person = arr[4];
 			bookList[i].l_Day = stoi(arr[5]);
@@ -202,7 +204,7 @@ book *load_m(string FileName){
 
 }
 
-//TODO: THREE - function Save
+//DONE: THREE - function Save
 
 void save_m(string fileName, book * bookList){
 	// use ofstream and save text file
@@ -214,13 +216,13 @@ void save_m(string fileName, book * bookList){
 
 	while (i < bookList[0].index - 1) {
 
-		outData << bookList[i].title << bookList[i].p_Year << bookList[i].author << bookList[i].edition << bookList[i].b_Person << bookList[i].l_Day << endl;
+		outData << bookList[i].title << "; " << bookList[i].p_Year << "; " << bookList[i].author << "; "<< bookList[i].edition << "; "<< bookList[i].b_Person << "; "<< bookList[i].l_Day << endl;
 		
 		i++;
 
 	}
 
-	outData << bookList[i].title << bookList[i].p_Year << bookList[i].author << bookList[i].edition << bookList[i].b_Person << bookList[i].l_Day;
+	outData << bookList[i].title << "; "<< bookList[i].p_Year << "; "<< bookList[i].author << "; "<< bookList[i].edition  << "; " << bookList[i].b_Person  << "; "<< bookList[i].l_Day;
 
 	outData.close();
 }
@@ -241,23 +243,56 @@ void print_m(book * bookList){
 }
 
 //TODO: THREE - function Insert
-book insert_m(string * arg){
+book * insert_m(book * bookList, string * arg){
 
-	book newBook;
 	
-	return newBook;
+	
+	return bookList;
 	
 }
 
-//TODO: THREE - function Lend
+//DONE: THREE - function Lend
 book *lend_m(book * bookList, string * arg){
+
+	cout << "  ==================================== Books Cuurrently Lent ====================================" <<endl;
+	cout << setw(8) << "Title" << setw(24) << "Author" << setw(28) << "Publised Year" << setw(10) << "Edition" << setw(10) << "Borrower" << setw(16) << "Days Borrowed" << endl;
+
+        for(int i = 0; i < bookList[0].index; i++){
+
+                if(bookList[i].title == arg[1]){
+
+                        bookList[i].b_Person = arg[2];
+						bookList[i].l_Day = stoi(arg[3]);
+
+                        cout << "   " << bookList[i].title << setw(24 - bookList[i].title.length()) << bookList[i].author << setw(28 - bookList[i].author.length()) << bookList[i].p_Year << setw(10 - bookList[i].p_Year.length()) << bookList[i].edition << setw(10 - bookList[i].edition.length()) << bookList[i].b_Person << setw(16 - bookList[i].b_Person.length()) << bookList[i].l_Day << endl;
+
+                }
+        }
+
+		cout << "  ============================================= End =============================================" << endl;
 
 	return bookList;
 }
 
-//TODO: THREE - function Passday
+//DONE: THREE - function Passday
 book *passDay_m(book * bookList){
-	
+
+	cout << "  ==================================== Books Cuurrently Lent ====================================" <<endl;	
+	cout << setw(8) << "Title" << setw(24) << "Author" << setw(28) << "Publised Year" << setw(10) << "Edition" << setw(10) << "Borrower" << setw(16) << "Days Borrowed" << endl;
+
+	for(int i = 0; i < bookList[0].index; i++){
+
+		if(bookList[i].b_Person != "None"){
+			
+			bookList[i].l_Day--;
+			
+			cout << "   " << bookList[i].title << setw(24 - bookList[i].title.length()) << bookList[i].author << setw(28 - bookList[i].author.length()) << bookList[i].p_Year << setw(10 - bookList[i].p_Year.length()) << bookList[i].edition << setw(10 - bookList[i].edition.length()) << bookList[i].b_Person << setw(16 - bookList[i].b_Person.length()) << bookList[i].l_Day << endl;
+		
+		}
+	}
+
+	cout << "  ============================================= End =============================================" << endl;	
+
 	return bookList;
 }
 
@@ -267,7 +302,7 @@ book * returned_m(book * bookList, string * arg){
 	return bookList;
 }
 
-//TODO: THREE - fundtion Exit
+//DONE: THREE - fundtion Exit
 int getExit(){
 
 	return 0;
