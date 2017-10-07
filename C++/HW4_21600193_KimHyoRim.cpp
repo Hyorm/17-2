@@ -36,15 +36,13 @@ int main(){
 
 	book * b_List;
 
-	string openFile = "first.txt";
+	string openFile = "input.txt";
+
+	b_List = load_m(openFile);
 
 	while(setExit){
 
-		b_List = load_m(openFile);
-
-		string argLine, *arg;
-
-		enum menu {INSERT, Insert, insert, LEND, Lend, lend, SAVE, Save, save, RETURNED, Returned, returned, PASSDAY, Passday, passday, PRINT, Print, print, EXIT, Exit, exit};
+		string argLine, * arg;
 
 		printMenu();
 
@@ -52,43 +50,34 @@ int main(){
 
 		arg = p_Arg(argLine);
 
-		menu num;
+		char n1 = arg[0][0];
+		char n2 = arg[0][1];
 
-		switch(num){
+		switch(toupper(n1)){
 
-		case INSERT:
-		case Insert:
-		case insert:	
+		case 'I':	
 						insert_m(arg);
 						break;
-		case LEND:
-		case Lend:
-		case lend:	
+		case 'L' :
 						lend_m(b_List, arg);
 						break;
-		case SAVE:
-		case Save:
-		case save:		
+		case 'S':
 						save_m(arg[1], b_List);
 						break;
-		case RETURNED:
-		case Returned:
-		case returned:	
+		case 'R':
 						returned_m(b_List, arg);
 						break;
-		case PASSDAY:
-		case Passday:
-		case passday:	
-						passDay_m(b_List);
-						break;
-		case PRINT:
-		case Print:
-		case print:	
-						print_m(b_List);
-						break;
-		case EXIT:
-		case Exit:
-		case exit:	
+		case 'P':	
+					switch (toupper(n2)) {
+			
+						case 'A':	passDay_m(b_List);
+									break;
+
+						case 'R':	print_m(b_List);
+									break;
+					}
+					break;
+		case 'E':	
 						setExit = getExit();
 						break;
 		}
@@ -115,23 +104,30 @@ string * p_Arg(string line){
 	
 	int f_col, i = 0;
 	
-	string arg[4];
-	
-	while(i < 4){
+	static string arg[6];
 
-		if(line.length() > 2){
-			f_col = line.find(";");
-				if(f_col == -1){
+	while(1){
+
+		if (i == 0) {
+			f_col = line.find(" ");
+			arg[i] = line.substr(0, f_col);
+			line.erase(0, f_col + 1);
+			i++;
+		}
+		else {
+			if (line.length() > 0) {
+				f_col = line.find(";");
+				if (f_col == -1) {
 					arg[i] = line;
 					break;
 				}
-			arg[i] = line.substr(0, f_col);
-			line.erase(0, f_col);
-			i++;
+				arg[i] = line.substr(0, f_col);
+				line.erase(0, f_col + 2);
+				i++;
+			}
+			else
+				break;
 		}
-		else
-			break;
-	
 	}
 
 	return arg;
@@ -139,13 +135,16 @@ string * p_Arg(string line){
 }
 
 
-//DONE: THREE - function Load
+//TODO: THREE - function Load
 
 book *load_m(string FileName){
 	//open file and store list
-	book * bookList;
+	static book bookList[50];
 
 	int i = 0;
+
+
+	string line;
 
 	ifstream inData;
 	inData.open(FileName.c_str());
@@ -159,12 +158,39 @@ book *load_m(string FileName){
 
 		while(!inData.eof()){
 		
-			inData >> bookList[i].title >> bookList[i].p_Year >> bookList[i].author >> bookList[i].edition >> bookList[i].b_Person >> bookList[i].l_Day;
+			getline(inData, line);
+
+			int f_col, j = 0;
+			string arr[6];
+	
+			while(1){
+
+				if (line.length() > 0) {
+					f_col = line.find(";");
+					if (f_col == -1) {
+						arr[j] = line;
+						break;
+					}
+					arr[j] = line.substr(0, f_col);
+					line.erase(0, f_col+2);
+					j++;
+		        }
+		        else
+                		break;
+				
+			}	
+
+			bookList[i].title = arr[0];
+			bookList[i].author = arr[1];
+			bookList[i].p_Year = arr[2];
+			bookList[i].edition = arr[3];
+			bookList[i].b_Person = arr[4];
+			bookList[i].l_Day = stoi(arr[5]);
 		
 			i++;
 
 		}
-
+		i--;
 		bookList[0].index = i;
 		print_m(bookList);
 	}
