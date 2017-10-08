@@ -1,3 +1,4 @@
 Discrete Mathematics; 1998; Douglas Winston; 5th Ed; None; 0
-C++; 2016; Nell Dale; 6th Ed; Kim; -1
+C++; 2016; Nell Dale; 6th Ed; hh; -1
 How To Program; 2017; Daniel Craig; 1st Ed; None; 0
+hello; 1920; kim; 1th Ed; boy; -2

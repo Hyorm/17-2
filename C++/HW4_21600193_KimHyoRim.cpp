@@ -13,7 +13,7 @@ struct book{
 	string author;
 	string edition;
 	string b_Person = "None";
-	int l_Day; 
+	int l_Day = 0; 
 	int index;
 
 };
@@ -230,22 +230,52 @@ void save_m(string fileName, book * bookList){
 //DONE: THREE - function Print
 void print_m(book * bookList){
 
-	cout << "  ======================================== Book Catalog ========================================" << endl;
-	cout << setw(8) << "Title" << setw(24) << "Author" << setw(28) << "Publised Year" << setw(10) << "Edition" << setw(10) << "Borrower" << setw(16) << "Days Borrowed" << endl;
+        string pass[50];
+        string today[50];
+        int pass_j = 0, today_j = 0;
+
+	cout << endl << "  ======================================== Book Catalog ========================================" << endl;
+	cout << setw(8) << "Title" << setw(24) << "Author" << setw(25) << "Publised Year" << setw(10) << "Edition" << setw(10) << "Borrower" << setw(16) << "Days Borrowed" << endl;
 
 	for(int i = 0; i < bookList[0].index ; i++ ){
-
-		cout << "   " << bookList[i].title << setw(24 - bookList[i].title.length()) << bookList[i].author << setw(28 - bookList[i].author.length()) << bookList[i].p_Year << setw(10 - bookList[i].p_Year.length()) << bookList[i].edition << setw(10 - bookList[i].edition.length()) << bookList[i].b_Person << setw(16 - bookList[i].b_Person.length()) << bookList[i].l_Day << endl;
+		if(bookList[i].b_Person != "None"){
+			if(bookList[i].l_Day == 0){
+			        today[today_j] = bookList[i].title;
+			        today[today_j+1] = bookList[i].b_Person;
+			        today_j += 2;
+			}
+			else if(bookList[i].l_Day <0){
+        			pass[pass_j] = bookList[i].title;
+        			pass[pass_j+1] = bookList[i].b_Person;
+        			pass_j += 2;
+			}
+		}
+		cout << "   " << bookList[i].title << setw(23 - bookList[i].title.length() + bookList[i].author.length()) << bookList[i].author << setw(22 - bookList[i].author.length()) << bookList[i].p_Year << setw(22 - bookList[i].p_Year.length()) << bookList[i].edition << setw(9 - bookList[i].edition.length() + bookList[i].b_Person.length()) << bookList[i].b_Person << setw(12 - bookList[i].b_Person.length()) << bookList[i].l_Day << endl;
 	}
 
-	cout << "  ============================================= End =============================================" << endl;
+	cout << "  ============================================= End ============================================" << endl;
+	for(int i = 0; i < pass_j ; i += 2)
+	        cout << pass[i]<< " SHOULD HAVE BEEN RETURNED ALREADY by " << pass[i+1]<< endl;
+	
+	for(int i = 0; i < today_j ; i += 2)
+	        cout << today[i]<< " should be returned today by " << today[i+1]<< endl;
 
+	cout << endl;
 }
 
-//TODO: THREE - function Insert
+//DONE: THREE - function Insert
 book * insert_m(book * bookList, string * arg){
 
-	
+	bookList[bookList[0].index].title = arg[1];
+	bookList[bookList[0].index].author = arg[2];
+	bookList[bookList[0].index].p_Year = arg[3];
+	bookList[bookList[0].index].edition = arg[4];
+
+	bookList[0].index++;
+
+	cout << endl << "  " << "Inserted " << arg[1] << " successfully!" << endl << endl;
+
+	print_m(bookList);
 	
 	return bookList;
 	
@@ -254,22 +284,37 @@ book * insert_m(book * bookList, string * arg){
 //DONE: THREE - function Lend
 book *lend_m(book * bookList, string * arg){
 
-	cout << "  ==================================== Books Cuurrently Lent ====================================" <<endl;
-	cout << setw(8) << "Title" << setw(24) << "Author" << setw(28) << "Publised Year" << setw(10) << "Edition" << setw(10) << "Borrower" << setw(16) << "Days Borrowed" << endl;
+	int j = 0;
 
+	for(int i = 0; i < bookList[0].index; i++){
+
+        	if(bookList[i].title == arg[1])
+			j++;
+	}
+
+	if(j == 0){
+
+		cout << "NO SUCH BOOK!" << endl;
+		return bookList;
+
+	}
+
+	cout << endl <<"  ==================================== Books Cuurrently Lent ====================================" <<endl;
+        cout << setw(8) << "Title" << setw(24) << "Author" << setw(25) << "Publised Year" << setw(10) << "Edition" << setw(10) << "Borrower" << setw(16) << "Days Borrowed" << endl;
+	
         for(int i = 0; i < bookList[0].index; i++){
 
                 if(bookList[i].title == arg[1]){
 
-                        bookList[i].b_Person = arg[2];
-						bookList[i].l_Day = stoi(arg[3]);
-
-                        cout << "   " << bookList[i].title << setw(24 - bookList[i].title.length()) << bookList[i].author << setw(28 - bookList[i].author.length()) << bookList[i].p_Year << setw(10 - bookList[i].p_Year.length()) << bookList[i].edition << setw(10 - bookList[i].edition.length()) << bookList[i].b_Person << setw(16 - bookList[i].b_Person.length()) << bookList[i].l_Day << endl;
-
-                }
+			bookList[i].b_Person = arg[2];
+			bookList[i].l_Day = stoi(arg[3]);
+		}
+		if(bookList[i].b_Person != "None")
+			cout << "   " << bookList[i].title << setw(23 - bookList[i].title.length() + bookList[i].author.length()) << bookList[i].author << setw(22 - bookList[i].author.length()) << bookList[i].p_Year << setw(22 - bookList[i].p_Year.length()) << bookList[i].edition << setw(9 - bookList[i].edition.length() + bookList[i].b_Person.length()) << bookList[i].b_Person << setw(12 - bookList[i].b_Person.length()) << bookList[i].l_Day << endl;
+		
         }
 
-		cout << "  ============================================= End =============================================" << endl;
+		cout << "  ============================================= End =============================================" << endl << endl;
 
 	return bookList;
 }
@@ -277,27 +322,74 @@ book *lend_m(book * bookList, string * arg){
 //DONE: THREE - function Passday
 book *passDay_m(book * bookList){
 
-	cout << "  ==================================== Books Cuurrently Lent ====================================" <<endl;	
-	cout << setw(8) << "Title" << setw(24) << "Author" << setw(28) << "Publised Year" << setw(10) << "Edition" << setw(10) << "Borrower" << setw(16) << "Days Borrowed" << endl;
+	cout << endl <<"  ==================================== Books Cuurrently Lent ====================================" <<endl;	
+        cout << setw(8) << "Title" << setw(24) << "Author" << setw(25) << "Publised Year" << setw(10) << "Edition" << setw(10) << "Borrower" << setw(16) << "Days Borrowed" << endl;
+
+	string pass[50];
+	string today[50];
+	int pass_j = 0, today_j = 0;	
 
 	for(int i = 0; i < bookList[0].index; i++){
 
 		if(bookList[i].b_Person != "None"){
 			
 			bookList[i].l_Day--;
-			
-			cout << "   " << bookList[i].title << setw(24 - bookList[i].title.length()) << bookList[i].author << setw(28 - bookList[i].author.length()) << bookList[i].p_Year << setw(10 - bookList[i].p_Year.length()) << bookList[i].edition << setw(10 - bookList[i].edition.length()) << bookList[i].b_Person << setw(16 - bookList[i].b_Person.length()) << bookList[i].l_Day << endl;
+
+			if(bookList[i].l_Day == 0){
+				today[today_j] = bookList[i].title;
+				today[today_j+1] = bookList[i].b_Person;
+				today_j += 2;
+			}
+			else if(bookList[i].l_Day <0){
+				pass[pass_j] = bookList[i].title;
+				pass[pass_j+1] = bookList[i].b_Person;
+				pass_j += 2;
+			}		
+
+			cout << "   " << bookList[i].title << setw(23 - bookList[i].title.length() + bookList[i].author.length()) << bookList[i].author << setw(22 - bookList[i].author.length()) << bookList[i].p_Year << setw(22 - bookList[i].p_Year.length()) << bookList[i].edition << setw(9 - bookList[i].edition.length() + bookList[i].b_Person.length()) << bookList[i].b_Person << setw(12 - bookList[i].b_Person.length()) << bookList[i].l_Day << endl;
 		
 		}
 	}
 
 	cout << "  ============================================= End =============================================" << endl;	
 
+	for(int i = 0; i < pass_j ; i += 2)
+		cout << pass[i]<< " SHOULD HAVE BEEN RETURNED ALREADY by " << pass[i+1]<< endl;
+
+	for(int i = 0; i < today_j ; i += 2)
+		cout << today[i]<< " should be returned today by " << today[i+1]<< endl;
+	cout << endl;
+
 	return bookList;
 }
 
-//TODO: THREE - function Returned
+//DONE: THREE - function Returned
 book * returned_m(book * bookList, string * arg){
+	
+	int j = 0;
+
+	for(int i = 0; i < bookList[0].index; i++){
+
+        	if(bookList[i].title == arg[1]){
+			if(bookList[i].b_Person == "None"){
+				cout << endl<< "ATTENTION No one borrowed that book!!" << endl;
+				return bookList;
+			}
+			else{
+			j++;
+			cout << endl << "  ========================================= Book Retured ========================================" <<endl;
+		        cout << setw(8) << "Title" << setw(24) << "Author" << setw(25) << "Publised Year" << setw(10) << "Edition" << setw(10) << "Borrower" << setw(16) << "Days Borrowed" << endl;
+			bookList[i].b_Person = "None";
+			bookList[i].l_Day = 0;
+			cout << "   " << bookList[i].title << setw(23 - bookList[i].title.length() + bookList[i].author.length()) << bookList[i].author << setw(22 - bookList[i].author.length()) << bookList[i].p_Year << setw(22 - bookList[i].p_Year.length()) << bookList[i].edition << setw(9 - bookList[i].edition.length() + bookList[i].b_Person.length()) << bookList[i].b_Person << setw(12 - bookList[i].b_Person.length()) << bookList[i].l_Day << endl;
+			cout << "  ============================================= End =============================================" << endl << endl;
+			}
+		}
+
+	}	
+
+	if(j == 0)
+		cout << endl<< "ATTENTION No Such Book!"<< endl;
 
 	return bookList;
 }
