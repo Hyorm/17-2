@@ -1,4 +1,4 @@
-package MovieRec ;
+package MovieRec;
 
 import java.io.* ;
 import java.util.* ;
@@ -10,7 +10,7 @@ public
 class Main 
 {
 	static PropertiesConfiguration config ;
-	static boolean isToShow = true ;
+	static boolean isToShow = false ;
 	static String configFilePath = "config.properties" ;
 
 	public static 
@@ -26,7 +26,7 @@ class Main
 		try {
 			cmd = parser.parse(options, args) ;
 			if (cmd.hasOption("d"))
-				isToShow = false ;
+				isToShow = true ;
 			if (cmd.hasOption("c"))
 				configFilePath = cmd.getOptionValue("c") ;
 			if (cmd.hasOption("h")) {

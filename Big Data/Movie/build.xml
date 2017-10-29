@@ -29,7 +29,7 @@
 
 	<target name="run" depends="build">
 		<java classname="MovieRec.Main" fork="true" dir="." maxmemory="4096m">
-			<!-- <arg value="-d"/> -->
+			<arg value="-d"/>
 			<classpath refid="lib.path"/>
 		</java>
 	</target>

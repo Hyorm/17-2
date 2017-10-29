@@ -1,0 +1,7 @@
+Discrete Mathematics; Douglas Winston; 1998; 5th Ed; None; 0
+C++; Nell Dale; 2016; 6th Ed; None; 0
+How To Program; Daniel Craig; 2017; 1st Ed; None; 0
+Don't Give Up; Daniel Lee; 2015; 2nd Ed; None; 0
+Lord of the Rings; JRR Tolkien; 1937; 1st Ed; None; 0
+The Hobbit; JRR Tolkien; 1937; 1st Ed; None; 0
+The Giver; Lois Lowry; 1994; 2nd Ed; None; 0

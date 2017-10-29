@@ -1,0 +1,4 @@
+Discrete Mathematics; 1998; Douglas Winston; 5th Ed; None; 0
+C++; 2016; Nell Dale; 6th Ed; None; 0
+How To Program; 2017; Daniel Craig; 1st Ed; None; 0
+The Hobbit; 1980; Tolkien; 1st Ed; None; 0
